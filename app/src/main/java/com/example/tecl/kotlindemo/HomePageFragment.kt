@@ -1,31 +1,43 @@
 package com.example.tecl.kotlindemo
 
 import android.app.Activity
-import android.app.Application
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.util.Log
-import com.example.tecl.kotlindemo.R.layout.banner
 import com.example.tecl.kotlindemo.bean.HomePageInfo
+import com.example.tecl.kotlindemo.bean.HomePageLiveData
 import com.example.tecl.kotlindemo.net.ActionCallbackListener
 import com.example.tecl.kotlindemo.net.ApiActionImpl
 import com.example.tecl.kotlindemo.utlis.GlideImageLoader
+import com.example.tecl.kotlindemo.utlis.JsonUtil
 import com.example.tecl.kotlindemo.utlis.ViewInfoUtils
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.youth.banner.Banner
 import com.youth.banner.BannerConfig
 import com.youth.banner.Transformer
 import com.youth.banner.listener.OnBannerClickListener
+import com.zhy.adapter.recyclerview.CommonAdapter
+import com.zhy.adapter.recyclerview.base.ViewHolder
 import org.json.JSONObject
 
 class HomePageFragment : Activity(){
+    //data
     var homePageInfo: HomePageInfo? = null
+    var liveDataList : ArrayList<HomePageLiveData>? = null
+    //view
     private var bannerView:Banner? = null
+    private var mLiveRecyclerView:RecyclerView? = null
+    private var mInformationRecycler:RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_page_fragment)
         bannerView=findViewById(R.id.id_homepage_banner)
+        mLiveRecyclerView=findViewById(R.id.id_live_recyclerview)
+        mInformationRecycler=findViewById(R.id.id_information_recycler)
         getHomeWorkData()
+        getLiveData()
     }
 
     private fun setBanner(){
@@ -69,14 +81,34 @@ class HomePageFragment : Activity(){
             override fun onSuccess(data: String?) {
                 var result = JSONObject(data).getString("result")
                 if(result=="success"){
-                    Log.i("SSSS","data=="+JSONObject(data).getJSONObject("data"))
                     homePageInfo=Gson().fromJson(JSONObject(data).getJSONObject("data").toString(),HomePageInfo::class.java)
                     setBanner()
+
+                    var adapter = object:CommonAdapter<HomePageInfo.Items>(this@HomePageFragment,
+                            R.layout.homepage_info_recycler_adapter, homePageInfo?.active?.items){
+                        override fun convert(holder: ViewHolder?, t: HomePageInfo.Items?, position: Int) {
+
+                        }
+                    }
                 }
             }
 
             override fun onFailure(errorEvent: String?, message: String?) {
                 Log.i("SSSS","message=="+message)
+            }
+
+        })
+    }
+
+    private fun getLiveData(){
+        var api = ApiActionImpl(this@HomePageFragment)
+        api.getLiveData(HashMap<String,String>(),object : ActionCallbackListener<ArrayList<HomePageLiveData>>{
+            override fun onSuccess(data: ArrayList<HomePageLiveData>?) {
+                liveDataList=data
+            }
+
+            override fun onFailure(errorEvent: String?, message: String?) {
+
             }
 
         })

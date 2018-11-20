@@ -3,11 +3,18 @@ package com.example.tecl.kotlindemo.net;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.tecl.kotlindemo.bean.HomePageLiveData;
+import com.example.tecl.kotlindemo.utlis.JsonUtil;
 import com.example.tecl.kotlindemo.utlis.SignUtils;
+import com.google.gson.reflect.TypeToken;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +47,38 @@ public class ApiActionImpl implements ApiAction{
                 });
 
     }
+
+    @Override
+    public void getLiveData(HashMap<String, String> params, final ActionCallbackListener<ArrayList<HomePageLiveData>> listener) {
+        OkHttpUtils
+                .post()
+                .url(getUrlAndParams("app/index/lvb/recommend",params))
+                .params(params)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        listener.onFailure("请求失败", e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            String result = new JSONObject(response).getString("result");
+                            if(result=="success"){
+                                ArrayList<HomePageLiveData> liveDataList =
+                                        JsonUtil.toObject(new JSONObject(response).getJSONArray("data").toString()
+                                        ,  new TypeToken<ArrayList<HomePageLiveData>> () {
+                                }.getType());
+                                listener.onSuccess(liveDataList);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
 
     private String getUrlAndParams(String _url,HashMap<String,String> params){
         String url = "https://test-api.yimifudao.com/v2.4/"+_url;
