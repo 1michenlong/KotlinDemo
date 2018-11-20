@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.youth.banner.Banner
+        android:id="@+id/id_homepage_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:image_scale_type="center_crop"
+        app:indicator_drawable_selected="@mipmap/banner_btn_dot_selected"
+        app:indicator_drawable_unselected="@mipmap/banner_btn_dot_defult"
+        app:indicator_height="8dp"
+        app:indicator_width="8dp"
+        app:indicator_margin="3dp"/>
+
+    <LinearLayout
+        android:id="@+id/id_item_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/id_first_item_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/id_free_audition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:drawableTop="@mipmap/index_btn_free"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:text="免费试听"/>
+
+            <TextView
+                android:id="@+id/id_understand_1v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:drawableTop="@mipmap/index_btn_1v1"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:text="了解1对1"/>
+
+            <TextView
+                android:id="@+id/id_live_class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:drawableTop="@mipmap/index_btn_video"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:text="直播课"/>
+
+            <TextView
+                android:id="@+id/id_how_class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:drawableTop="@mipmap/index_btn_question"
+                android:text="如何上课"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/id_second_item_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="3dp"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/id_invite_redP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:drawableTop="@mipmap/index_btn_redpackage"
+                android:text="邀请有礼"/>
+
+            <TextView
+                android:id="@+id/id_my_homework"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:drawableTop="@mipmap/index_btn_myhomework"
+                android:text="我的作业"/>
+
+            <TextView
+                android:id="@+id/id_my_schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:drawableTop="@mipmap/index_btn_guihua"
+                android:text="学习档案"/>
+
+            <TextView
+                android:id="@+id/id_goto_class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="5dp"
+                android:textSize="11dp"
+                android:textColor="#666666"
+                android:drawableTop="@mipmap/index_btn_gotoclass"
+                android:text="溢米测评"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
