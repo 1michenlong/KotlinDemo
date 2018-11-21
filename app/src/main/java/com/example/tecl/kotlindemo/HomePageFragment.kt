@@ -2,6 +2,7 @@ package com.example.tecl.kotlindemo
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -32,6 +33,7 @@ class HomePageFragment : Activity(){
     var homePageInfo: HomePageInfo? = null
     var liveDataList : ArrayList<HomePageLiveData>? = null
     //view
+    private var mSwipeRefreshLayout: SwipeRefreshLayout? =null
     private var bannerView:Banner? = null
     private var mLiveRecyclerView:RecyclerView? = null
     private var mInformationRecycler:RecyclerView? = null
@@ -43,6 +45,7 @@ class HomePageFragment : Activity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_page_fragment)
+        mSwipeRefreshLayout=findViewById(R.id.main_swrl)
         bannerView=findViewById(R.id.id_homepage_banner)
         mLiveRecyclerView=findViewById(R.id.id_live_recyclerview)
         mInformationRecycler=findViewById(R.id.id_information_recycler)
@@ -50,6 +53,12 @@ class HomePageFragment : Activity(){
         setRecyclerStyle(mInformationRecycler)
         getHomeWorkData()
         getLiveData()
+
+        mSwipeRefreshLayout?.setColorSchemeResources(R.color.main_org,R.color.main_org)
+        mSwipeRefreshLayout?.setOnRefreshListener {
+            getHomeWorkData()
+            getLiveData()
+        }
     }
 
     private fun setBanner(){
@@ -96,7 +105,7 @@ class HomePageFragment : Activity(){
         mLayoutManager.orientation=LinearLayoutManager.HORIZONTAL
         mRecyclerView?.layoutManager =mLayoutManager//设置布局管理器
         //设置动画
-        mRecyclerView?.itemAnimator =DefaultItemAnimator()
+        mRecyclerView?.itemAnimator = DefaultItemAnimator()
     }
 
     private fun getHomeWorkData(){
@@ -111,31 +120,34 @@ class HomePageFragment : Activity(){
                     homePageInfo=Gson().fromJson(JSONObject(data).getJSONObject("data").toString(),HomePageInfo::class.java)
                     setBanner()
 
-                    mInformationAdapter = object:CommonAdapter<HomePageInfo.Items>(this@HomePageFragment,
-                            R.layout.homepage_info_recycler_adapter, homePageInfo?.active?.items){
-                        override fun convert(holder: ViewHolder?, t: HomePageInfo.Items?, position: Int) {
-                            var image = holder?.getView<ImageView>(R.id.id_image)
-                            var priceText = holder?.getView<TextView>(R.id.id_price_text)
-                            var viewLine = holder?.getView<View>(R.id.id_gray_line)
-                            var numText = holder?.getView<TextView>(R.id.id_bottom_text)
-                            holder?.setText(R.id.id_live_title,t?.title)
-                            priceText?.visibility= View.GONE
-                            viewLine?.visibility= View.GONE
-                            numText?.visibility= View.GONE
-                            if (image != null) {
-                                ViewInfoUtils.getInstance().setViewSize(image, recyclerItemImageWidth!!,recyclerItemImageHeight!!)
-                                Glide.with(this@HomePageFragment).load(t?.linkImage).into(image)
+                    if(null==mInformationAdapter){
+                        mInformationAdapter = object:CommonAdapter<HomePageInfo.Items>(this@HomePageFragment,
+                                R.layout.homepage_info_recycler_adapter, homePageInfo?.active?.items){
+                            override fun convert(holder: ViewHolder?, t: HomePageInfo.Items?, position: Int) {
+                                var image = holder?.getView<ImageView>(R.id.id_image)
+                                var priceText = holder?.getView<TextView>(R.id.id_price_text)
+                                var viewLine = holder?.getView<View>(R.id.id_gray_line)
+                                var numText = holder?.getView<TextView>(R.id.id_bottom_text)
+                                holder?.setText(R.id.id_live_title,t?.title)
+                                priceText?.visibility= View.GONE
+                                viewLine?.visibility= View.GONE
+                                numText?.visibility= View.GONE
+                                if (image != null) {
+                                    ViewInfoUtils.getInstance().setViewSize(image, recyclerItemImageWidth!!,recyclerItemImageHeight!!)
+                                    Glide.with(this@HomePageFragment).load(t?.linkImage).into(image)
+                                }
                             }
                         }
+                        mInformationRecycler?.adapter =mInformationAdapter
+                    }else{
+                        mInformationAdapter?.notifyDataSetChanged()
                     }
-                    mInformationRecycler?.adapter =mInformationAdapter
+
+                    mSwipeRefreshLayout!!.isRefreshing = false//取消刷新
                 }
             }
-
             override fun onFailure(errorEvent: String?, message: String?) {
-                Log.i("SSSS","message=="+message)
             }
-
         })
     }
 
@@ -144,10 +156,14 @@ class HomePageFragment : Activity(){
         api.getLiveData(HashMap<String,String>(),object : ActionCallbackListener<ArrayList<HomePageLiveData>>{
             override fun onSuccess(data: ArrayList<HomePageLiveData>?) {
                 liveDataList=data
-                mLiveRecyclerAdapter=object : LiveRecyclerAdapter(this@HomePageFragment,
-                        R.layout.homepage_info_recycler_adapter,liveDataList,recyclerItemImageWidth!!,recyclerItemImageHeight!!){}
+                if(null==mLiveRecyclerAdapter){
+                    mLiveRecyclerAdapter=object : LiveRecyclerAdapter(this@HomePageFragment,
+                            R.layout.homepage_info_recycler_adapter,liveDataList,recyclerItemImageWidth!!,recyclerItemImageHeight!!){}
+                    mLiveRecyclerView?.adapter=mLiveRecyclerAdapter
+                }else{
+                    mLiveRecyclerAdapter?.notifyDataSetChanged()
+                }
 
-                mLiveRecyclerView?.adapter=mLiveRecyclerAdapter
             }
 
             override fun onFailure(errorEvent: String?, message: String?) {
