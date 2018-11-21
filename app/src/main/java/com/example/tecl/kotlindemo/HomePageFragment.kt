@@ -2,17 +2,23 @@ package com.example.tecl.kotlindemo
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.example.tecl.kotlindemo.MyApplication.isTablet
+import com.example.tecl.kotlindemo.adapter.LiveRecyclerAdapter
 import com.example.tecl.kotlindemo.bean.HomePageInfo
 import com.example.tecl.kotlindemo.bean.HomePageLiveData
 import com.example.tecl.kotlindemo.net.ActionCallbackListener
 import com.example.tecl.kotlindemo.net.ApiActionImpl
 import com.example.tecl.kotlindemo.utlis.GlideImageLoader
-import com.example.tecl.kotlindemo.utlis.JsonUtil
 import com.example.tecl.kotlindemo.utlis.ViewInfoUtils
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.youth.banner.Banner
 import com.youth.banner.BannerConfig
 import com.youth.banner.Transformer
@@ -29,6 +35,10 @@ class HomePageFragment : Activity(){
     private var bannerView:Banner? = null
     private var mLiveRecyclerView:RecyclerView? = null
     private var mInformationRecycler:RecyclerView? = null
+    private var mLiveRecyclerAdapter : CommonAdapter<HomePageLiveData>? = null
+    private var mInformationAdapter : CommonAdapter<HomePageInfo.Items>? = null
+    private var recyclerItemImageWidth:Int? = null
+    private var recyclerItemImageHeight:Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +46,8 @@ class HomePageFragment : Activity(){
         bannerView=findViewById(R.id.id_homepage_banner)
         mLiveRecyclerView=findViewById(R.id.id_live_recyclerview)
         mInformationRecycler=findViewById(R.id.id_information_recycler)
+        setRecyclerStyle(mLiveRecyclerView)
+        setRecyclerStyle(mInformationRecycler)
         getHomeWorkData()
         getLiveData()
     }
@@ -72,6 +84,21 @@ class HomePageFragment : Activity(){
         })
     }
 
+    fun setRecyclerStyle(mRecyclerView: RecyclerView?){
+        recyclerItemImageWidth = if(isTablet(this@HomePageFragment)){//pad
+            (MyApplication.getWidth()*0.3).toInt()
+        }else{
+            (MyApplication.getWidth()*0.66).toInt()
+        }
+        recyclerItemImageHeight = (recyclerItemImageWidth!! /1.77).toInt()
+
+        var mLayoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+        mLayoutManager.orientation=LinearLayoutManager.HORIZONTAL
+        mRecyclerView?.layoutManager =mLayoutManager//设置布局管理器
+        //设置动画
+        mRecyclerView?.itemAnimator =DefaultItemAnimator()
+    }
+
     private fun getHomeWorkData(){
         var hashMap = HashMap<String,String>()
         hashMap["applicationNo"] = "40619"
@@ -84,12 +111,24 @@ class HomePageFragment : Activity(){
                     homePageInfo=Gson().fromJson(JSONObject(data).getJSONObject("data").toString(),HomePageInfo::class.java)
                     setBanner()
 
-                    var adapter = object:CommonAdapter<HomePageInfo.Items>(this@HomePageFragment,
+                    mInformationAdapter = object:CommonAdapter<HomePageInfo.Items>(this@HomePageFragment,
                             R.layout.homepage_info_recycler_adapter, homePageInfo?.active?.items){
                         override fun convert(holder: ViewHolder?, t: HomePageInfo.Items?, position: Int) {
-
+                            var image = holder?.getView<ImageView>(R.id.id_image)
+                            var priceText = holder?.getView<TextView>(R.id.id_price_text)
+                            var viewLine = holder?.getView<View>(R.id.id_gray_line)
+                            var numText = holder?.getView<TextView>(R.id.id_bottom_text)
+                            holder?.setText(R.id.id_live_title,t?.title)
+                            priceText?.visibility= View.GONE
+                            viewLine?.visibility= View.GONE
+                            numText?.visibility= View.GONE
+                            if (image != null) {
+                                ViewInfoUtils.getInstance().setViewSize(image, recyclerItemImageWidth!!,recyclerItemImageHeight!!)
+                                Glide.with(this@HomePageFragment).load(t?.linkImage).into(image)
+                            }
                         }
                     }
+                    mInformationRecycler?.adapter =mInformationAdapter
                 }
             }
 
@@ -105,6 +144,10 @@ class HomePageFragment : Activity(){
         api.getLiveData(HashMap<String,String>(),object : ActionCallbackListener<ArrayList<HomePageLiveData>>{
             override fun onSuccess(data: ArrayList<HomePageLiveData>?) {
                 liveDataList=data
+                mLiveRecyclerAdapter=object : LiveRecyclerAdapter(this@HomePageFragment,
+                        R.layout.homepage_info_recycler_adapter,liveDataList,recyclerItemImageWidth!!,recyclerItemImageHeight!!){}
+
+                mLiveRecyclerView?.adapter=mLiveRecyclerAdapter
             }
 
             override fun onFailure(errorEvent: String?, message: String?) {

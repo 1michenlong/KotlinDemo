@@ -33,7 +33,7 @@
             <View
                 android:id="@+id/id_gray_line"
                 android:layout_width="1dp"
-                android:layout_height="wrap_content"
+                android:layout_height="5dp"
                 android:background="#f0f3f6"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"/>
@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:textColor="#222222"
+                android:lines="1"
                 android:text="图片1024*124"/>
 
         </LinearLayout>

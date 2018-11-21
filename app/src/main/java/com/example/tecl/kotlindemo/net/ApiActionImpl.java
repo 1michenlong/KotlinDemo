@@ -65,7 +65,7 @@ public class ApiActionImpl implements ApiAction{
                     public void onResponse(String response, int id) {
                         try {
                             String result = new JSONObject(response).getString("result");
-                            if(result=="success"){
+                            if(result.equals("success")){
                                 ArrayList<HomePageLiveData> liveDataList =
                                         JsonUtil.toObject(new JSONObject(response).getJSONArray("data").toString()
                                         ,  new TypeToken<ArrayList<HomePageLiveData>> () {
