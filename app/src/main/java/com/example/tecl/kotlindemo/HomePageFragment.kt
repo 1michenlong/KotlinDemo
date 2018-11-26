@@ -1,14 +1,20 @@
 package com.example.tecl.kotlindemo
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.tecl.kotlindemo.MyApplication.isTablet
@@ -17,6 +23,8 @@ import com.example.tecl.kotlindemo.bean.HomePageInfo
 import com.example.tecl.kotlindemo.bean.HomePageLiveData
 import com.example.tecl.kotlindemo.net.ActionCallbackListener
 import com.example.tecl.kotlindemo.net.ApiActionImpl
+import com.example.tecl.kotlindemo.popupwindow.KuPayPopupWindow
+import com.example.tecl.kotlindemo.popupwindow.KuPayPopupWindows
 import com.example.tecl.kotlindemo.utlis.GlideImageLoader
 import com.example.tecl.kotlindemo.utlis.ViewInfoUtils
 import com.google.gson.Gson
@@ -33,8 +41,10 @@ class HomePageFragment : Activity(){
     var homePageInfo: HomePageInfo? = null
     var liveDataList : ArrayList<HomePageLiveData>? = null
     //view
+    private var mFatherLinear:LinearLayout? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? =null
     private var bannerView:Banner? = null
+    private var freeListener : TextView? = null
     private var mLiveRecyclerView:RecyclerView? = null
     private var mInformationRecycler:RecyclerView? = null
     private var mLiveRecyclerAdapter : CommonAdapter<HomePageLiveData>? = null
@@ -45,6 +55,8 @@ class HomePageFragment : Activity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_page_fragment)
+        mFatherLinear=findViewById(R.id.id_fatherLinear)
+        freeListener=findViewById(R.id.id_free_audition)
         mSwipeRefreshLayout=findViewById(R.id.main_swrl)
         bannerView=findViewById(R.id.id_homepage_banner)
         mLiveRecyclerView=findViewById(R.id.id_live_recyclerview)
@@ -58,6 +70,11 @@ class HomePageFragment : Activity(){
         mSwipeRefreshLayout?.setOnRefreshListener {
             getHomeWorkData()
             getLiveData()
+        }
+
+        freeListener?.setOnClickListener {
+            val kuPayPopupWindow = KuPayPopupWindow(this@HomePageFragment,"你好")
+            kuPayPopupWindow.showAtLocation(mFatherLinear, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
         }
     }
 
@@ -86,6 +103,7 @@ class HomePageFragment : Activity(){
         bannerView?.start()
 
         bannerView?.setOnBannerClickListener(object:OnBannerClickListener{
+            @RequiresApi(Build.VERSION_CODES.KITKAT)
             override fun OnBannerClick(position: Int) {
                 Log.i("SSSS","banner.geti=="+position)
             }
