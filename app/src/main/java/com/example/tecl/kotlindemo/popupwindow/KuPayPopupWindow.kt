@@ -17,7 +17,6 @@ class KuPayPopupWindow(private val context: Context) : PopupWindow() {
     }
 
     init {
-        Log.i("SSSS","init")
         val view = LayoutInflater.from(context).inflate(R.layout.kupay_popupwindow, null,false)
 
         this.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -27,6 +26,5 @@ class KuPayPopupWindow(private val context: Context) : PopupWindow() {
         this.setBackgroundDrawable(BitmapDrawable())
         this.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         this.contentView = view
-        Log.i("SSSS","initEnd")
     }
 }
