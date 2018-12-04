@@ -1,11 +1,12 @@
 package com.example.tecl.kotlindemo
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -24,7 +25,6 @@ import com.example.tecl.kotlindemo.bean.HomePageLiveData
 import com.example.tecl.kotlindemo.net.ActionCallbackListener
 import com.example.tecl.kotlindemo.net.ApiActionImpl
 import com.example.tecl.kotlindemo.popupwindow.KuPayPopupWindow
-import com.example.tecl.kotlindemo.popupwindow.KuPayPopupWindows
 import com.example.tecl.kotlindemo.utlis.GlideImageLoader
 import com.example.tecl.kotlindemo.utlis.ViewInfoUtils
 import com.google.gson.Gson
@@ -36,7 +36,7 @@ import com.zhy.adapter.recyclerview.CommonAdapter
 import com.zhy.adapter.recyclerview.base.ViewHolder
 import org.json.JSONObject
 
-class HomePageFragment : Activity(){
+class HomePageFragment : Activity(),View.OnClickListener{
     //data
     var homePageInfo: HomePageInfo? = null
     var liveDataList : ArrayList<HomePageLiveData>? = null
@@ -44,9 +44,14 @@ class HomePageFragment : Activity(){
     private var mFatherLinear:LinearLayout? = null
     private var mSwipeRefreshLayout: SwipeRefreshLayout? =null
     private var bannerView:Banner? = null
-    private var freeListener : TextView? = null
     private var mLiveRecyclerView:RecyclerView? = null
     private var mInformationRecycler:RecyclerView? = null
+    //免费试听
+    private var mFreeAudition:TextView? = null
+    //了解1对1
+    private var mUnderstand1v1:TextView? = null
+
+    //adapter
     private var mLiveRecyclerAdapter : CommonAdapter<HomePageLiveData>? = null
     private var mInformationAdapter : CommonAdapter<HomePageInfo.Items>? = null
     private var recyclerItemImageWidth:Int? = null
@@ -56,11 +61,15 @@ class HomePageFragment : Activity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_page_fragment)
         mFatherLinear=findViewById(R.id.id_fatherLinear)
-        freeListener=findViewById(R.id.id_free_audition)
         mSwipeRefreshLayout=findViewById(R.id.main_swrl)
         bannerView=findViewById(R.id.id_homepage_banner)
         mLiveRecyclerView=findViewById(R.id.id_live_recyclerview)
         mInformationRecycler=findViewById(R.id.id_information_recycler)
+        mFreeAudition=findViewById(R.id.id_free_audition);
+        mUnderstand1v1=findViewById(R.id.id_understand_1v1)
+        mFreeAudition?.setOnClickListener(this)
+        mUnderstand1v1?.setOnClickListener(this)
+
         setRecyclerStyle(mLiveRecyclerView)
         setRecyclerStyle(mInformationRecycler)
         getHomeWorkData()
@@ -72,9 +81,22 @@ class HomePageFragment : Activity(){
             getLiveData()
         }
 
-        freeListener?.setOnClickListener {
-            val kuPayPopupWindow = KuPayPopupWindow(this@HomePageFragment,"你好")
-            kuPayPopupWindow.showAtLocation(mFatherLinear, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.id_free_audition->{
+                val kuPayPopupWindow = KuPayPopupWindow(this@HomePageFragment,"你好")
+                kuPayPopupWindow.showAtLocation(mFatherLinear, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
+            }
+
+            R.id.id_understand_1v1->{
+                var bottomSheetDialog = BottomSheetDialog(this)
+                bottomSheetDialog.setContentView(R.layout.sheet_dialog)
+                bottomSheetDialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
+                        ?.setBackgroundColor(ContextCompat.getColor(this@HomePageFragment,android.R.color.transparent))
+                bottomSheetDialog.show()
+            }
         }
     }
 
@@ -133,6 +155,7 @@ class HomePageFragment : Activity(){
         var api = ApiActionImpl(this@HomePageFragment)
         api.getHomeWorkData(hashMap,object : ActionCallbackListener<String>{
             override fun onSuccess(data: String?) {
+                Log.i("SSSS","data=="+data)
                 var result = JSONObject(data).getString("result")
                 if(result=="success"){
                     homePageInfo=Gson().fromJson(JSONObject(data).getJSONObject("data").toString(),HomePageInfo::class.java)

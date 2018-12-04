@@ -8,7 +8,7 @@ public class HomePageInfo {
     private String indexBooth;
     private Active active;
     private Reservation reservation;
-    private List<String> headLines;
+    private List<HeadLines> headLines;
     private Telephone telephone;
     private List<Banners> banners;
 
@@ -52,11 +52,11 @@ public class HomePageInfo {
         return reservation;
     }
 
-    public void setHeadLines(List<String> headLines) {
+    public void setHeadLines(List<HeadLines> headLines) {
         this.headLines = headLines;
     }
 
-    public List<String> getHeadLines() {
+    public List<HeadLines> getHeadLines() {
         return headLines;
     }
 
@@ -447,6 +447,157 @@ public class HomePageInfo {
         }
         public int getLocationId() {
             return locationId;
+        }
+
+        public void setLinkUrl(String linkUrl) {
+            this.linkUrl = linkUrl;
+        }
+        public String getLinkUrl() {
+            return linkUrl;
+        }
+
+        public void setOnline(String online) {
+            this.online = online;
+        }
+        public String getOnline() {
+            return online;
+        }
+
+        public void setLinkType(int linkType) {
+            this.linkType = linkType;
+        }
+        public int getLinkType() {
+            return linkType;
+        }
+
+        public void setShareUrl(String shareUrl) {
+            this.shareUrl = shareUrl;
+        }
+        public String getShareUrl() {
+            return shareUrl;
+        }
+
+        public void setCreateOn(String createOn) {
+            this.createOn = createOn;
+        }
+        public String getCreateOn() {
+            return createOn;
+        }
+
+        public void setTime(int time) {
+            this.time = time;
+        }
+        public int getTime() {
+            return time;
+        }
+
+        public void setShareDesc(String shareDesc) {
+            this.shareDesc = shareDesc;
+        }
+        public String getShareDesc() {
+            return shareDesc;
+        }
+
+    }
+
+    /**
+     * @author bejson.com (i@bejson.com)
+     * @website http://www.bejson.com/java2pojo/
+     */
+    public class HeadLines {
+        private String titleDesc;
+        private String shareImage;
+        private String label;
+        private int sort;
+        private String title;
+        private int tid;
+        private String offline;
+        private String linkImage;
+        private String shareTitle;
+        private int locationId;
+        private String qrcodeLocation;
+        private String linkUrl;
+        private String online;
+        private int linkType;
+        private String shareUrl;
+        private String createOn;
+        private int time;
+        private String shareDesc;
+        public void setTitleDesc(String titleDesc) {
+            this.titleDesc = titleDesc;
+        }
+        public String getTitleDesc() {
+            return titleDesc;
+        }
+
+        public void setShareImage(String shareImage) {
+            this.shareImage = shareImage;
+        }
+        public String getShareImage() {
+            return shareImage;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+        public String getLabel() {
+            return label;
+        }
+
+        public void setSort(int sort) {
+            this.sort = sort;
+        }
+        public int getSort() {
+            return sort;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTid(int tid) {
+            this.tid = tid;
+        }
+        public int getTid() {
+            return tid;
+        }
+
+        public void setOffline(String offline) {
+            this.offline = offline;
+        }
+        public String getOffline() {
+            return offline;
+        }
+
+        public void setLinkImage(String linkImage) {
+            this.linkImage = linkImage;
+        }
+        public String getLinkImage() {
+            return linkImage;
+        }
+
+        public void setShareTitle(String shareTitle) {
+            this.shareTitle = shareTitle;
+        }
+        public String getShareTitle() {
+            return shareTitle;
+        }
+
+        public void setLocationId(int locationId) {
+            this.locationId = locationId;
+        }
+        public int getLocationId() {
+            return locationId;
+        }
+
+        public void setQrcodeLocation(String qrcodeLocation) {
+            this.qrcodeLocation = qrcodeLocation;
+        }
+        public String getQrcodeLocation() {
+            return qrcodeLocation;
         }
 
         public void setLinkUrl(String linkUrl) {

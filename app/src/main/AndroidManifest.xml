@@ -43,7 +43,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HomePageFragment"/>
+        <activity android:name=".HomePageFragment"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
 
     </application>
 
