@@ -63,6 +63,7 @@ public class ApiActionImpl implements ApiAction{
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.i("SSSS","response=="+response);
                         try {
                             String result = new JSONObject(response).getString("result");
                             if(result.equals("success")){

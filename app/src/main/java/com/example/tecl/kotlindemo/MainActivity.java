@@ -18,6 +18,7 @@ import com.example.tecl.kotlindemo.popupwindow.KuPayPopupWindows;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private TextView mSearchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv);
+        mSearchText=findViewById(R.id.id_search_text);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this,
                 LinearLayoutManager.VERTICAL, false);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -62,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
                     text2 = (TextView) itemView.findViewById(R.id.text2);
                 }
 
+            }
+        });
+
+        mSearchText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                maoPaoSort();
             }
         });
     }
