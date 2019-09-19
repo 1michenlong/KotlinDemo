@@ -11,10 +11,57 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
+            storeFile file('kotlinkey/kotlin.jks')
+            storePassword "a123456"
+            keyAlias "key0"
+            keyPassword "a123456"
+        }
+    }
+
+    buildTypes {
+        debug {
             minifyEnabled false
+            debuggable true
+        }
+
+        release {
+            minifyEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //签名
+            signingConfig signingConfigs.release
+        }
+    }
+
+    flavorDimensions "kontlinDemo"
+    productFlavors {
+        dev {
+            buildConfigField("String", "hostUrl", '"http://192.168.50.246/"')
+            buildConfigField("String", "h5Url", '"http://192.168.50.246:83/"')
+            buildConfigField("String", "imgUrl", '"http://myhq-test.oss-cn-shanghai.aliyuncs.com/"')
+            dimension "kontlinDemo"
+        }
+        staging {
+            buildConfigField("String", "hostUrl", '"https://pre.cuttlefish.vip/"')
+            buildConfigField("String", "h5Url", '"https://pre.cuttlefish.vip/"')
+            buildConfigField("String", "imgUrl", '"https://oss.cuttlefish.vip"')
+            buildConfigField("String", "rong_app_key", '"y745wfm8yj4sv"')
+            buildConfigField("Integer", "miniprogram_type", '2')
+            buildConfigField("String", "socketUrl", '"ws://pre.cuttlefish.vip/"')
+            dimension "kontlinDemo"
+
+        }
+        live {
+            buildConfigField("String", "hostUrl", '"https://api.mycuttlefish.com/"')
+            buildConfigField("String", "h5Url", '"https://www.mycuttlefish.com/"')
+            buildConfigField("String", "imgUrl", '"https://oss.cuttlefish.vip"')
+            buildConfigField("String", "rong_app_key", '"p5tvi9dspntx4"')
+            buildConfigField("Integer", "miniprogram_type", '0')
+            buildConfigField("String", "socketUrl", '"ws://api.mycuttlefish.com/"')
+            dimension "kontlinDemo"
         }
     }
 }
@@ -22,7 +69,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
